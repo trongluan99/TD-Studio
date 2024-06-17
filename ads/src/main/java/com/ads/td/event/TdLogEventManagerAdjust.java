@@ -10,12 +10,12 @@ import com.ads.td.ads.TdAd;
 import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
 
-public class TdAdjust {
+public class TdLogEventManagerAdjust {
     public static boolean enableAdjust = false;
     private static String eventNamePurchase = "";
 
     public static void setEventNamePurchase(String eventNamePurchase) {
-        TdAdjust.eventNamePurchase = eventNamePurchase;
+        TdLogEventManagerAdjust.eventNamePurchase = eventNamePurchase;
     }
 
     public static void trackAdRevenue(String id) {
@@ -30,7 +30,6 @@ public class TdAdjust {
 
     public static void onTrackEvent(String eventName, String id) {
         AdjustEvent event = new AdjustEvent(eventName);
-        // Assign custom identifier to event which will be reported in success/failure callbacks.
         event.setCallbackId(id);
         Adjust.trackEvent(event);
     }
@@ -43,14 +42,14 @@ public class TdAdjust {
     }
 
     public static void onTrackRevenuePurchase(float revenue, String currency) {
-        if (TdAdjust.enableAdjust) {
+        if (TdLogEventManagerAdjust.enableAdjust) {
             onTrackRevenue(eventNamePurchase, revenue, currency);
         }
 
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
-        if (TdAdjust.enableAdjust) {
+        if (TdLogEventManagerAdjust.enableAdjust) {
             AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
             adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
@@ -59,7 +58,7 @@ public class TdAdjust {
     }
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
-        if (TdAdjust.enableAdjust) {
+        if (TdLogEventManagerAdjust.enableAdjust) {
             AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_APPLOVIN_MAX);
             adjustAdRevenue.setRevenue(ad.getRevenue(), "USD");
             adjustAdRevenue.setAdRevenueNetwork(ad.getNetworkName());

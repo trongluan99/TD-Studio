@@ -1,5 +1,6 @@
 package com.ads.td.admob;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
@@ -80,19 +81,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private boolean disableAdResumeByClickAction = false;
     private final List<Class> disabledAppOpenList;
     private Class splashActivity;
-
-
     private boolean isTimeout = false;
-    private static final int TIMEOUT_MSG = 11;
-
-    public Thread threadHigh;
-    public Thread threadMedium;
-    public Thread threadAll;
-
     private AppOpenAd splashAdHigh = null;
     private AppOpenAd splashAdMedium = null;
     private AppOpenAd splashAdAll = null;
-    private boolean isAppBackground = false;
 
     private AppOpenAd splashAdOpen = null;
     private InterstitialAd splashAdInter = null;
@@ -104,37 +96,20 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private int statusOpen = -1;
     private int statusInter = -1;
 
-    private int Type_Loading = 0;
-    private int Type_Load_Success = 1;
-    private int Type_Load_Fail = 2;
-    private int Type_Show_Success = 3;
-    private int Type_Show_Fail = 4;
+    private final int Type_Loading = 0;
+    private final int Type_Load_Success = 1;
+    private final int Type_Load_Fail = 2;
+    private final int Type_Show_Success = 3;
+    private final int Type_Show_Fail = 4;
 
     private boolean isAppOpenShowed = false;
-    private AppOpenAd adLoadedAppOpen = null;
 
     private Dialog dialogSplash = null;
-    private boolean isTimeDelay = false;
     private CountDownTimer timerListenInter = null;
     private long currentTime = 0;
     private long timeRemaining = 0;
 
-
     private Handler timeoutHandler;
-//            = new Handler(msg -> {
-//        if (msg.what == TIMEOUT_MSG) {
-//
-//                Log.e(TAG, "timeout load ad ");
-//                isTimeout = true;
-//                enableScreenContentCallback = false;
-//                if (fullScreenContentCallback != null) {
-//                    fullScreenContentCallback.onAdDismissedFullScreenContent();
-//                }
-//
-//        }
-//        return false;
-//    });
-
 
     public AppOpenAd getSplashAd() {
         return splashAd;
@@ -144,9 +119,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.splashAd = splashAd;
     }
 
-    /**
-     * Constructor
-     */
     private AppOpenManager() {
         disabledAppOpenList = new ArrayList<>();
     }
@@ -158,11 +130,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         return INSTANCE;
     }
 
-    /**
-     * Init AppOpenManager
-     *
-     * @param application
-     */
     public void init(Application application, String appOpenAdId) {
         isInitialized = true;
         disableAdResumeByClickAction = false;
@@ -170,10 +137,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         this.appResumeAdId = appOpenAdId;
-//        if (!Purchase.getInstance().isPurchased(application.getApplicationContext()) &&
-//                !isAdAvailable(false) && appOpenAdId != null) {
-//            fetchAd(false);
-//        }
     }
 
     public boolean isInitialized() {
@@ -197,9 +160,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         isInterstitialShowing = interstitialShowing;
     }
 
-    /**
-     * Call disable ad resume when click a button, auto enable ad resume in next start
-     */
     public void disableAdResumeByClickAction() {
         disableAdResumeByClickAction = true;
     }
@@ -208,20 +168,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.disableAdResumeByClickAction = disableAdResumeByClickAction;
     }
 
-    /**
-     * Check app open ads is showing
-     *
-     * @return
-     */
     public boolean isShowingAd() {
         return isShowingAd;
     }
 
-    /**
-     * Disable app open app on specific activity
-     *
-     * @param activityClass
-     */
     public void disableAppResumeWithActivity(Class activityClass) {
         Log.d(TAG, "disableAppResumeWithActivity: " + activityClass.getName());
         disabledAppOpenList.add(activityClass);
@@ -258,9 +208,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.fullScreenContentCallback = null;
     }
 
-    /**
-     * Request an ad
-     */
     public void fetchAd(final boolean isSplash) {
         Log.d(TAG, "fetchAd: isSplash = " + isSplash);
         if (isAdAvailable(isSplash)) {
@@ -269,13 +216,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         loadCallback =
                 new AppOpenAd.AppOpenAdLoadCallback() {
-
-                    /**
-                     * Called when an app open ad has loaded.
-                     *
-                     * @param ad the loaded app open ad.
-                     */
-
 
                     @Override
                     public void onAdLoaded(AppOpenAd ad) {
@@ -288,7 +228,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
-                                TdLogEventManager.logPaidAdjustWithToken(adValue, ad.getAdUnitId(), TdAdConfig.ADJUST_TOKEN_TIKTOK);
                             });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                         } else {
@@ -303,7 +242,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
-                                TdLogEventManager.logPaidAdjustWithToken(adValue, ad.getAdUnitId(), TdAdConfig.ADJUST_TOKEN_TIKTOK);
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
@@ -311,17 +249,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                     }
 
-
-                    /**
-                     * Called when an app open ad has failed to load.
-                     *
-                     * @param loadAdError the error.
-                     */
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         Log.d(TAG, "onAppOpenAdFailedToLoad: isSplash" + isSplash + " message " + loadAdError.getMessage());
-//                        if (isSplash && fullScreenContentCallback!=null)
-//                            fullScreenContentCallback.onAdDismissedFullScreenContent();
                     }
 
 
@@ -340,6 +270,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
     }
 
+    @SuppressLint("MissingPermission")
     private void showTestIdAlert(Context context, boolean isSplash, String id) {
         Notification notification = new NotificationCompat.Builder(context, "warning_ads")
                 .setContentTitle("Found test ad id")
@@ -356,14 +287,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify(isSplash ? Admob.SPLASH_ADS : Admob.RESUME_ADS, notification);
-//        if (!BuildConfig.DEBUG){
-//            throw new RuntimeException("Found test ad id on release");
-//        }
     }
 
-    /**
-     * Creates and returns ad request.
-     */
     private AdRequest getAdRequest() {
         return new AdRequest.Builder().build();
     }
@@ -374,9 +299,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         return (dateDifference < (numMilliSecondsPerHour * numHours));
     }
 
-    /**
-     * Utility method that checks if ad exists and can be shown.
-     */
     public boolean isAdAvailable(boolean isSplash) {
         long loadTime = isSplash ? splashLoadTime : appResumeLoadTime;
         boolean wasLoadTimeLessThanNHoursAgo = wasLoadTimeLessThanNHoursAgo(loadTime, 4);
@@ -431,8 +353,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     public void showAdIfAvailable(final boolean isSplash) {
-        // Only show ad if there is not already an app open ad currently showing
-        // and an ad is available.
         if (currentActivity == null || AppPurchase.getInstance().isPurchased(currentActivity)) {
             if (fullScreenContentCallback != null && enableScreenContentCallback) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
@@ -533,15 +453,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             });
                     splashAd.show(currentActivity);
                 }
-                
-                /*if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
-                    Log.d(TAG, "dismiss dialog loading ad open: ");
-                    try {
-                        finalDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }*/
             }, 800);
         }
     }
@@ -569,12 +480,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            new Handler().postDelayed(() -> {
             if (appResumeAd != null) {
                 appResumeAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                     @Override
                     public void onAdDismissedFullScreenContent() {
-                        // Set the reference to null so isAdAvailable() returns false.
                         appResumeAd = null;
                         if (fullScreenContentCallback != null && enableScreenContentCallback) {
                             fullScreenContentCallback.onAdDismissedFullScreenContent();
@@ -639,13 +548,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             } else {
                 dismissDialogLoading();
             }
-//            }, 1000);
         }
     }
 
     public void loadSplashOpenHighFloor(Class splashActivity, Activity activity, String idOpenHigh, String idOpenMedium, String idOpenAll, int timeOutOpen, AdCallback adListener) {
         isAppOpenShowed = false;
-        isTimeDelay = false;
 
         statusHigh = Type_Loading;
         statusMedium = Type_Loading;
@@ -661,7 +568,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isTimeDelay = true;
                 if (adListener != null && !isAppOpenShowed) {
                     isAppOpenShowed = true;
                     adListener.onNextAction();
@@ -741,6 +647,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     appOpenAd.getAdUnitId(),
                                     appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.APP_OPEN);
+
                             TdLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), TdAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
 
@@ -978,7 +885,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     public void loadSplashOpenAndInter(Class splashActivity, AppCompatActivity activity, String idOpen, String idInter, int timeOutOpen, AdCallback adListener) {
         isAppOpenShowed = false;
-        isTimeDelay = false;
         statusOpen = Type_Loading;
         statusInter = Type_Loading;
 
@@ -1010,7 +916,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             adListener.onAdLoadedHigh();
                         }
 
-                        // Log paid App Open High Floor
                         appOpenAd.setOnPaidEventListener(adValue -> {
                             TdLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                     adValue,
@@ -1056,7 +961,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         public void onTick(long l) {
                                             if (statusInter == Type_Load_Success && !isAppOpenShowed) {
                                                 isAppOpenShowed = true;
-                                                Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, TdAdConfig.ADJUST_TOKEN_TIKTOK);
+                                                Admob.getInstance().onShowSplash(activity, adListener, splashAdInter);
                                             } else if (statusInter == Type_Load_Fail && !isAppOpenShowed) {
                                                 if (adListener != null) {
                                                     isAppOpenShowed = true;
@@ -1113,9 +1018,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 @Override
                                 public void onTick(long l) {
                                     if (statusInter == Type_Load_Success && !isAppOpenShowed) {
-
                                         isAppOpenShowed = true;
-                                        Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, TdAdConfig.ADJUST_TOKEN_TIKTOK);
+                                        Admob.getInstance().onShowSplash(activity, adListener, splashAdInter);
                                     } else if (statusInter == Type_Load_Fail && !isAppOpenShowed) {
                                         if (adListener != null) {
                                             isAppOpenShowed = true;
@@ -1195,12 +1099,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
             return;
         }
-
-//        if (isAdAvailable(true)) {
-//            showAdIfAvailable(true);
-//            return;
-//        }
-
         loadCallback =
                 new AppOpenAd.AppOpenAdLoadCallback() {
                     @Override
@@ -1211,10 +1109,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                         if (isTimeout) {
                             Log.e(TAG, "onAppOpenAdLoaded: splash timeout");
-//                            if (fullScreenContentCallback != null) {
-//                                fullScreenContentCallback.onAdDismissedFullScreenContent();
-//                                enableScreenContentCallback = false;
-//                            }
                         } else {
                             AppOpenManager.this.splashAd = appOpenAd;
                             splashLoadTime = new Date().getTime();
@@ -1224,7 +1118,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         appOpenAd.getAdUnitId(),
                                         appOpenAd.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
-                                TdLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), TdAdConfig.ADJUST_TOKEN_TIKTOK);
                             });
 
                             (new Handler()).postDelayed(() -> {
@@ -1233,11 +1126,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         }
                     }
 
-                    /**
-                     * Called when an app open ad has failed to load.
-                     *
-                     * @param loadAdError the error.
-                     */
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         Log.e(TAG, "onAppOpenAdFailedToLoad: splash " + loadAdError.getMessage());
@@ -1386,8 +1274,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         super.onAdShowedFullScreenContent();
                     }
                 });
-
-
             }
         });
 
@@ -1611,6 +1497,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
         }
     }
+
 
     public void loadOpenAppAdSplash(final Context context, String idResumeSplash, final long timeDelay, long timeOut, final boolean isShowAdIfReady, final AdCallback adCallback) {
         this.splashAdId = idResumeSplash;

@@ -24,17 +24,10 @@ public class TdLogEventManager {
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, TdAdConfig.PROVIDER_ADMOB);
-        TdAdjust.pushTrackEventAdmob(adValue);
-        TdAppsflyer.getInstance().pushTrackEventAdmob(adValue, adUnitId, adType);
+        TdLogEventManagerAdjust.pushTrackEventAdmob(adValue);
         // Log revenue Facebook 30/08
-        float value = adValue.getValueMicros() * 1.0f / 1000000 * 24000;
+        float value = adValue.getValueMicros() * 1.0f / 1000000;
         AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("VND"));
-    }
-
-    public static void logPaidAdImpression(Context context, MaxAd adValue, AdType adType) {
-        logEventWithMaxAds(context, adValue);
-        TdAdjust.pushTrackEventApplovin(adValue, context);
-        TdAppsflyer.getInstance().pushTrackEventApplovin(adValue, adType);
     }
 
     public static void logPaidAdjustWithToken(AdValue adValue, String adUnitId, String token) {
@@ -43,6 +36,23 @@ public class TdLogEventManager {
         adjustEvent.setRevenue(value, "USD");
         adjustEvent.setOrderId(adUnitId);
         Adjust.trackEvent(adjustEvent);
+    }
+
+    public static void logPaidAdjustWithTokenMax(MaxAd adValue, String adUnitId, String token) {
+        AdjustEvent adjustEvent = new AdjustEvent(token);
+        double value = adValue.getRevenue();
+        adjustEvent.setRevenue(value, "USD");
+        adjustEvent.setOrderId(adUnitId);
+        Adjust.trackEvent(adjustEvent);
+    }
+
+    public static void logPaidAdImpression(Context context, MaxAd adValue, AdType adType) {
+        logEventWithMaxAds(context, adValue);
+        TdLogEventManagerAdjust.pushTrackEventApplovin(adValue, context);
+
+        // Log revenue Facebook 30/05/2024
+        double value = adValue.getRevenue() * 25000;
+        AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("VND"));
     }
 
     private static void logEventWithMaxAds(Context context, MaxAd impressionData) {
@@ -59,32 +69,19 @@ public class TdLogEventManager {
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, int mediationProvider) {
-        Log.d(TAG, String.format(
-                "Paid event of value %.0f microcents in currency USD of precision %s%n occurred for ad unit %s from ad network %s.mediation provider: %s%n",
-                revenue,
-                precision,
-                adUnitId,
-                network, mediationProvider));
-
         Bundle params = new Bundle(); // Log ad value in micros.
         params.putDouble("valuemicros", revenue);
         params.putString("currency", "USD");
-        // These values below won’t be used in ROAS recipe.
-        // But log for purposes of debugging and future reference.
         params.putInt("precision", precision);
         params.putString("adunitid", adUnitId);
         params.putString("network", network);
 
-        // log revenue this ad
         logPaidAdImpressionValue(context, revenue / 1000000.0, precision, adUnitId, network, mediationProvider);
         FirebaseAnalyticsUtil.logEventWithAds(context, params);
         FacebookEventUtils.logEventWithAds(context, params);
-        // update current tota
-        // l revenue ads
         SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) revenue);
         logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
 
-        // update current total revenue ads for event paid_ad_impression_value_0.01
         AppUtil.currentTotalRevenue001Ad += revenue;
         SharePreferenceUtils.updateCurrentTotalRevenue001Ad(context, AppUtil.currentTotalRevenue001Ad);
         logTotalRevenue001Ad(context);
@@ -102,7 +99,7 @@ public class TdLogEventManager {
         params.putString("network", network);
 
 
-        TdAdjust.logPaidAdImpressionValue(value, "USD");
+        TdLogEventManagerAdjust.logPaidAdImpressionValue(value, "USD");
         FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params, mediationProvider);
 
         FacebookEventUtils.logPaidAdImpressionValue(context, params, mediationProvider);
@@ -163,35 +160,34 @@ public class TdLogEventManager {
 
 
     public static void setEventNamePurchaseAdjust(String eventNamePurchase) {
-        TdAdjust.setEventNamePurchase(eventNamePurchase);
+        TdLogEventManagerAdjust.setEventNamePurchase(eventNamePurchase);
     }
 
     public static void trackAdRevenue(String id) {
-        TdAdjust.trackAdRevenue(id);
+        TdLogEventManagerAdjust.trackAdRevenue(id);
     }
 
     public static void onTrackEvent(String eventName) {
-        TdAdjust.onTrackEvent(eventName);
+        TdLogEventManagerAdjust.onTrackEvent(eventName);
     }
 
     public static void onTrackEvent(String eventName, String id) {
-        TdAdjust.onTrackEvent(eventName, id);
+        TdLogEventManagerAdjust.onTrackEvent(eventName, id);
     }
 
     public static void onTrackRevenue(String eventName, float revenue, String currency) {
-        TdAdjust.onTrackRevenue(eventName, revenue, currency);
+        TdLogEventManagerAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
     public static void onTrackRevenuePurchase(float revenue, String currency, String idPurchase, int typeIAP) {
-        TdAdjust.onTrackRevenuePurchase(revenue, currency);
-        TdAppsflyer.getInstance().onTrackRevenuePurchase(revenue, currency, idPurchase, typeIAP);
+        TdLogEventManagerAdjust.onTrackRevenuePurchase(revenue, currency);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
-        TdAdjust.pushTrackEventAdmob(adValue);
+        TdLogEventManagerAdjust.pushTrackEventAdmob(adValue);
     }
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
-        TdAdjust.pushTrackEventApplovin(ad, context);
+        TdLogEventManagerAdjust.pushTrackEventApplovin(ad, context);
     }
 }

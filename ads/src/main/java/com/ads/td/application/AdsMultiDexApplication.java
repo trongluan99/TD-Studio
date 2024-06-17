@@ -11,17 +11,19 @@ import java.util.List;
 
 public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
-    protected TdAdConfig tdAdConfig;
+    protected TdAdConfig mTdAdConfig;
     protected List<String> listTestDevice;
 
     @Override
     public void onCreate() {
         super.onCreate();
         listTestDevice = new ArrayList<String>();
-        tdAdConfig = new TdAdConfig(this);
+        mTdAdConfig = new TdAdConfig(this);
         if (SharePreferenceUtils.getInstallTime(this) == 0) {
             SharePreferenceUtils.setInstallTime(this);
         }
         AppUtil.currentTotalRevenue001Ad = SharePreferenceUtils.getCurrentTotalRevenue001Ad(this);
     }
+
+
 }
