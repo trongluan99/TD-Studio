@@ -33,8 +33,9 @@ import com.ads.td.ads.wrapper.ApInterstitialAd;
 import com.ads.td.ads.wrapper.ApInterstitialPriorityAd;
 import com.ads.td.ads.wrapper.ApNativeAd;
 import com.ads.td.config.TdAdConfig;
-import com.ads.td.event.TdLogEventManagerAdjust;
+import com.ads.td.event.TdAdjust;
 import com.ads.td.funtion.AdCallback;
+import com.ads.td.funtion.AdType;
 import com.ads.td.funtion.RewardCallback;
 import com.ads.td.util.AppUtil;
 import com.ads.td.util.SharePreferenceUtils;
@@ -42,6 +43,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -83,7 +85,7 @@ public class TdAd {
         this.adConfig = adConfig;
         AppUtil.VARIANT_DEV = adConfig.isVariantDev();
         if (adConfig.isEnableAdjust()) {
-            TdLogEventManagerAdjust.enableAdjust = true;
+            TdAdjust.enableAdjust = true;
             setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustConfig().getAdjustToken());
         }
 
@@ -358,6 +360,18 @@ public class TdAd {
             }
 
             @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                callback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                callback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
             public void onInterstitialShow() {
                 super.onInterstitialShow();
                 callback.onInterstitialShow();
@@ -391,6 +405,18 @@ public class TdAd {
             public void onAdClicked() {
                 super.onAdClicked();
                 callback.onAdClicked();
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                callback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                callback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
             }
         });
     }
@@ -429,6 +455,18 @@ public class TdAd {
                 super.onAdClicked();
                 callback.onAdClicked();
             }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                callback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                callback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
         });
     }
 
@@ -446,8 +484,8 @@ public class TdAd {
         adPlaceHolder.addView(adView);
     }
 
-    public void initRewardAds(Context context, String id) {
-        Admob.getInstance().initRewardAds(context, id);
+    public void initRewardAds(Context context, String id, RewardCallback callback) {
+        Admob.getInstance().initRewardAds(context, id, callback);
     }
 
     public void initRewardAds(Context context, String id, AdCallback callback) {
@@ -521,6 +559,18 @@ public class TdAd {
             }
 
             @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
             public void onAdFailedToLoad(@Nullable LoadAdError i) {
                 super.onAdFailedToLoad(i);
                 if (isFinishLoadNativeAdHigh2 && apNativeAdHigh2 != null) {
@@ -552,6 +602,18 @@ public class TdAd {
             public void onAdClicked() {
                 super.onAdClicked();
                 adCallback.onAdClicked();
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
             }
 
             @Override
@@ -590,6 +652,19 @@ public class TdAd {
                 adCallback.onAdClicked();
             }
 
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
             @Override
             public void onAdFailedToLoad(@Nullable LoadAdError i) {
                 super.onAdFailedToLoad(i);
@@ -622,6 +697,18 @@ public class TdAd {
             public void onAdClicked() {
                 super.onAdClicked();
                 adCallback.onAdClicked();
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
             }
 
             @Override
@@ -693,6 +780,18 @@ public class TdAd {
             }
 
             @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
             public void onAdImpression() {
                 super.onAdImpression();
                 adCallback.onAdImpression();
@@ -721,6 +820,18 @@ public class TdAd {
             public void onAdClicked() {
                 super.onAdClicked();
                 adCallback.onAdClicked();
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
 
             @Override
@@ -755,6 +866,18 @@ public class TdAd {
             }
 
             @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
             public void onAdImpression() {
                 super.onAdImpression();
                 adCallback.onAdImpression();
@@ -783,6 +906,18 @@ public class TdAd {
             public void onAdClicked() {
                 super.onAdClicked();
                 adCallback.onAdClicked();
+            }
+
+            @Override
+            public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
 
             @Override
@@ -847,6 +982,18 @@ public class TdAd {
                     public void onAdClicked() {
                         super.onAdClicked();
                         adCallback.onAdClicked();
+                    }
+
+                    @Override
+                    public void onAdClicked(String adUnitId, String mediationAdapterClassName, AdType adType) {
+                        super.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                        adCallback.onAdClicked(adUnitId, mediationAdapterClassName, adType);
+                    }
+
+                    @Override
+                    public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                        super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                        adCallback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
                     }
 
                     @Override

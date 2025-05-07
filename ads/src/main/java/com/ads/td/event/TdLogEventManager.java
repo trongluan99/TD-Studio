@@ -24,7 +24,7 @@ public class TdLogEventManager {
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, TdAdConfig.PROVIDER_ADMOB);
-        TdLogEventManagerAdjust.pushTrackEventAdmob(adValue);
+        TdAdjust.pushTrackEventAdmob(adValue);
         // Log revenue Facebook 30/08
         float value = adValue.getValueMicros() * 1.0f / 1000000 * 25000;
         AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("VND"));
@@ -48,7 +48,7 @@ public class TdLogEventManager {
 
     public static void logPaidAdImpression(Context context, MaxAd adValue, AdType adType) {
         logEventWithMaxAds(context, adValue);
-        TdLogEventManagerAdjust.pushTrackEventApplovin(adValue, context);
+        TdAdjust.pushTrackEventApplovin(adValue, context);
 
         // Log revenue Facebook 30/05/2024
         double value = adValue.getRevenue() * 25000;
@@ -99,7 +99,7 @@ public class TdLogEventManager {
         params.putString("network", network);
 
 
-        TdLogEventManagerAdjust.logPaidAdImpressionValue(value, "USD");
+        TdAdjust.logPaidAdImpressionValue(value, "USD");
         FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params, mediationProvider);
 
         FacebookEventUtils.logPaidAdImpressionValue(context, params, mediationProvider);
@@ -160,34 +160,34 @@ public class TdLogEventManager {
 
 
     public static void setEventNamePurchaseAdjust(String eventNamePurchase) {
-        TdLogEventManagerAdjust.setEventNamePurchase(eventNamePurchase);
+        TdAdjust.setEventNamePurchase(eventNamePurchase);
     }
 
     public static void trackAdRevenue(String id) {
-        TdLogEventManagerAdjust.trackAdRevenue(id);
+        TdAdjust.trackAdRevenue(id);
     }
 
     public static void onTrackEvent(String eventName) {
-        TdLogEventManagerAdjust.onTrackEvent(eventName);
+        TdAdjust.onTrackEvent(eventName);
     }
 
     public static void onTrackEvent(String eventName, String id) {
-        TdLogEventManagerAdjust.onTrackEvent(eventName, id);
+        TdAdjust.onTrackEvent(eventName, id);
     }
 
     public static void onTrackRevenue(String eventName, float revenue, String currency) {
-        TdLogEventManagerAdjust.onTrackRevenue(eventName, revenue, currency);
+        TdAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
     public static void onTrackRevenuePurchase(float revenue, String currency, String idPurchase, int typeIAP) {
-        TdLogEventManagerAdjust.onTrackRevenuePurchase(revenue, currency);
+        TdAdjust.onTrackRevenuePurchase(revenue, currency);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
-        TdLogEventManagerAdjust.pushTrackEventAdmob(adValue);
+        TdAdjust.pushTrackEventAdmob(adValue);
     }
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
-        TdLogEventManagerAdjust.pushTrackEventApplovin(ad, context);
+        TdAdjust.pushTrackEventApplovin(ad, context);
     }
 }

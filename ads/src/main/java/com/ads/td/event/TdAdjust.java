@@ -10,12 +10,12 @@ import com.ads.td.ads.TdAd;
 import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
 
-public class TdLogEventManagerAdjust {
+public class TdAdjust {
     public static boolean enableAdjust = false;
     private static String eventNamePurchase = "";
 
     public static void setEventNamePurchase(String eventNamePurchase) {
-        TdLogEventManagerAdjust.eventNamePurchase = eventNamePurchase;
+        TdAdjust.eventNamePurchase = eventNamePurchase;
     }
 
     public static void trackAdRevenue(String id) {
@@ -42,14 +42,14 @@ public class TdLogEventManagerAdjust {
     }
 
     public static void onTrackRevenuePurchase(float revenue, String currency) {
-        if (TdLogEventManagerAdjust.enableAdjust) {
+        if (TdAdjust.enableAdjust) {
             onTrackRevenue(eventNamePurchase, revenue, currency);
         }
 
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
-        if (TdLogEventManagerAdjust.enableAdjust) {
+        if (TdAdjust.enableAdjust) {
             AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
             adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
@@ -58,7 +58,7 @@ public class TdLogEventManagerAdjust {
     }
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
-        if (TdLogEventManagerAdjust.enableAdjust) {
+        if (TdAdjust.enableAdjust) {
             AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_APPLOVIN_MAX);
             adjustAdRevenue.setRevenue(ad.getRevenue(), "USD");
             adjustAdRevenue.setAdRevenueNetwork(ad.getNetworkName());
