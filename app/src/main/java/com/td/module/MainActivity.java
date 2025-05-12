@@ -1,6 +1,7 @@
 package com.td.module;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -60,10 +61,27 @@ public class MainActivity extends AppCompatActivity {
                         mInterstitialAd = apInterstitialAd;
                         Toast.makeText(MainActivity.this, "Ads Ready", Toast.LENGTH_SHORT).show();
                     }
+
+                    @Override
+                    public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                        super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                        Log.d("LuanDev", "onAdLogRev: 1M: " + adValue + " " + adUnitId + " " + mediationAdapterClassName + " " + adType);
+                    }
                 });
             }
         });
         btnShow.setOnClickListener(v -> TdAd.getInstance().forceShowInterstitial(MainActivity.this, mInterstitialAd, new AdCallback() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.d("LuanDev", "onAdClicked: 1M");
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+                Log.d("LuanDev", "onAdImpression: 1M");
+            }
         }, true));
 
         // Banner Ads

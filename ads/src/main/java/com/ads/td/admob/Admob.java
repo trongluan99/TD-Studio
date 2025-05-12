@@ -51,7 +51,6 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MediaAspectRatio;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.OnPaidEventListener;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.initialization.AdapterStatus;
@@ -60,7 +59,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.android.gms.ads.nativead.NativeAdView;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
@@ -368,6 +366,12 @@ public class Admob {
                     }
                     adListener.onAdFailedToLoad(i);
                 }
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
         });
 
@@ -693,10 +697,7 @@ public class Admob {
                             if (tokenAdjust != null) {
                                 TdLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), tokenAdjust);
                             }
-
-                            if (adCallback != null) {
-                                adCallback.onAdLogRev(adValue, interstitialAd.getAdUnitId(), interstitialAd.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
-                            }
+                            adCallback.onAdLogRev(adValue, interstitialAd.getAdUnitId(), interstitialAd.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
                         });
                     }
 
@@ -2160,6 +2161,12 @@ public class Admob {
                     isInterHigh1Failed = true;
                 }
             }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
         });
 
         loadInterSplashHigh2(context, idAdsHigh2, timeOut, timeDelay, new AdCallback() {
@@ -2194,6 +2201,12 @@ public class Admob {
                 super.onAdFailedToLoad(i);
                 adListener.onAdPriorityFailedToLoad(i);
             }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
         });
 
         loadInterSplashHigh3(context, idAdsHigh3, timeOut, timeDelay, new AdCallback() {
@@ -2226,6 +2239,12 @@ public class Admob {
                 super.onAdFailedToLoad(i);
                 adListener.onAdPriorityFailedToLoad(i);
             }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
         });
 
         loadInterSplashNormal(context, idAdsNormal, timeOut, timeDelay, new AdCallback() {
@@ -2253,6 +2272,12 @@ public class Admob {
             public void onAdFailedToLoad(@Nullable LoadAdError i) {
                 super.onAdFailedToLoad(i);
                 adListener.onAdPriorityFailedToLoad(i);
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
         });
     }
@@ -2691,10 +2716,6 @@ public class Admob {
                         if (tokenAdjust != null) {
                             TdLogEventManager.logPaidAdjustWithToken(adValue, mInterSplashHigh1.getAdUnitId(), tokenAdjust);
                         }
-
-                        if (adListener != null) {
-                            adListener.onAdLogRev(adValue, mInterSplashHigh1.getAdUnitId(), mInterSplashHigh1.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
-                        }
                     });
 
                     if (isTimeDelayHigh1) {
@@ -2723,6 +2744,12 @@ public class Admob {
                     adListener.onAdFailedToLoad(i);
                 }
             }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
         });
     }
 
@@ -2749,7 +2776,7 @@ public class Admob {
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 AppOpenManager.getInstance().disableAppResume();
                 isShowLoadingSplash = true;
-                mInterSplashHigh1 = null;
+                /*mInterSplashHigh1 = null;*/
             }
 
             @Override
@@ -2931,10 +2958,6 @@ public class Admob {
                             if (tokenAdjust != null) {
                                 TdLogEventManager.logPaidAdjustWithToken(adValue, mInterSplashHigh2.getAdUnitId(), tokenAdjust);
                             }
-
-                            if (adListener != null) {
-                                adListener.onAdLogRev(adValue, mInterSplashHigh2.getAdUnitId(), mInterSplashHigh2.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
-                            }
                         }
                     });
 
@@ -2959,6 +2982,12 @@ public class Admob {
                         Log.e(TAG, "loadSplashInterstitialAdsMedium: load fail " + i.getMessage());
                     adListener.onAdFailedToLoad(i);
                 }
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
         });
     }
@@ -2988,7 +3017,7 @@ public class Admob {
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 AppOpenManager.getInstance().disableAppResume();
                 isShowLoadingSplash = false;
-                mInterSplashHigh2 = null;
+                /*mInterSplashHigh2 = null;*/
             }
 
             @Override
@@ -3169,10 +3198,6 @@ public class Admob {
                         if (tokenAdjust != null) {
                             TdLogEventManager.logPaidAdjustWithToken(adValue, mInterSplashHigh3.getAdUnitId(), tokenAdjust);
                         }
-
-                        if (adListener != null) {
-                            adListener.onAdLogRev(adValue, mInterSplashHigh3.getAdUnitId(), mInterSplashHigh3.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
-                        }
                     });
 
                     if (isTimeDelayHigh3) {
@@ -3196,6 +3221,12 @@ public class Admob {
                         Log.e(TAG, "loadSplashInterstitialAdsMedium: load fail " + i.getMessage());
                     adListener.onAdFailedToLoad(i);
                 }
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
         });
     }
@@ -3225,7 +3256,7 @@ public class Admob {
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 AppOpenManager.getInstance().disableAppResume();
                 isShowLoadingSplash = false;
-                mInterSplashHigh3 = null;
+                /*mInterSplashHigh3 = null;*/
             }
 
             @Override
@@ -3406,10 +3437,6 @@ public class Admob {
                         if (tokenAdjust != null) {
                             TdLogEventManager.logPaidAdjustWithToken(adValue, mInterSplashNormal.getAdUnitId(), tokenAdjust);
                         }
-
-                        if (adListener != null) {
-                            adListener.onAdLogRev(adValue, mInterSplashNormal.getAdUnitId(), mInterSplashNormal.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
-                        }
                     });
 
                     if (isTimeDelayNormal) {
@@ -3433,6 +3460,12 @@ public class Admob {
                         Log.e(TAG, "loadSplashInterstitialAdsMedium: load fail " + i.getMessage());
                     adListener.onAdFailedToLoad(i);
                 }
+            }
+
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
             }
         });
     }

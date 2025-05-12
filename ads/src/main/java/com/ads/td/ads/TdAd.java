@@ -267,11 +267,16 @@ public class TdAd {
                 adListener.onAdFailedToShow(adError);
             }
 
+            @Override
+            public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                adListener.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+            }
         });
         return apInterstitialAd;
     }
 
-    public void forceShowInterstitial(@NonNull Context context, ApInterstitialAd mInterstitialAd,
+    public void  forceShowInterstitial(@NonNull Context context, ApInterstitialAd mInterstitialAd,
                                       @NonNull final AdCallback callback, boolean shouldReloadAds) {
         if (System.currentTimeMillis() - SharePreferenceUtils.getLastImpressionInterstitialTime(context)
                 < TdAd.getInstance().adConfig.getIntervalInterstitialAd() * 1000L
@@ -347,6 +352,11 @@ public class TdAd {
                             callback.onAdFailedToShow(adError);
                         }
 
+                        @Override
+                        public void onAdLogRev(AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
+                            super.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                            callback.onAdLogRev(adValue, adUnitId, mediationAdapterClassName, adType);
+                        }
                     });
                 } else {
                     mInterstitialAd.setInterstitialAd(null);
@@ -375,6 +385,12 @@ public class TdAd {
             public void onInterstitialShow() {
                 super.onInterstitialShow();
                 callback.onInterstitialShow();
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+                callback.onAdImpression();
             }
         };
         Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), adCallback);
