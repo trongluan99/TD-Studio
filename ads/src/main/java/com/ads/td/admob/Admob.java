@@ -469,7 +469,8 @@ public class Admob {
             }
         });
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+        {
             try {
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
@@ -514,7 +515,7 @@ public class Admob {
                 }
             }, 800);
 
-        } else {
+        } else{
             isShowLoadingSplash = false;
         }
     }
@@ -615,7 +616,8 @@ public class Admob {
             }
         });
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+        {
             try {
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
@@ -659,7 +661,7 @@ public class Admob {
                 }
             }, 800);
 
-        } else {
+        } else{
             isShowLoadingSplash = false;
         }
     }
@@ -818,7 +820,8 @@ public class Admob {
     private void showInterstitialAd(Context context, InterstitialAd mInterstitialAd, AdCallback callback) {
         currentClicked++;
         if (currentClicked >= numShowAds && mInterstitialAd != null) {
-            if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+            if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+            {
                 try {
                     if (dialog != null && dialog.isShowing())
                         dialog.dismiss();
@@ -2836,7 +2839,8 @@ public class Admob {
             }
         });
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+        {
             try {
                 try {
                     if (dialog != null && dialog.isShowing()) {
@@ -2886,7 +2890,7 @@ public class Admob {
                     adListener.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "MiaAd"));
                 }
             }, 800);
-        } else {
+        } else{
             adListener.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "MiaAd"));
             Log.e(TAG, "onShowSplash: fail on background");
             isShowLoadingSplash = false;
@@ -3079,7 +3083,8 @@ public class Admob {
             }
         });
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+        {
             try {
                 try {
                     if (dialog != null && dialog.isShowing()) {
@@ -3129,7 +3134,7 @@ public class Admob {
                 }
             }, 800);
 
-        } else {
+        } else{
             adListener.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "AperoAd"));
             Log.e(TAG, "onShowSplash: fail on background");
             isShowLoadingSplash = false;
@@ -3318,7 +3323,8 @@ public class Admob {
             }
         });
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+        {
             try {
                 try {
                     if (dialog != null && dialog.isShowing()) {
@@ -3368,7 +3374,7 @@ public class Admob {
                 }
             }, 800);
 
-        } else {
+        } else{
             adListener.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "AperoAd"));
             Log.e(TAG, "onShowSplash: fail on background");
             isShowLoadingSplash = false;
@@ -3563,7 +3569,8 @@ public class Admob {
             }
         });
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED) || ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))
+        {
             try {
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
@@ -3608,7 +3615,7 @@ public class Admob {
                 }
             }, 800);
 
-        } else {
+        } else{
             isShowLoadingSplash = false;
         }
     }

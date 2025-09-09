@@ -50,7 +50,7 @@ public class TdAdjust {
 
     public static void pushTrackEventAdmob(AdValue adValue) {
         if (TdAdjust.enableAdjust) {
-            AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
+            AdjustAdRevenue adRevenue = new AdjustAdRevenue("admob_sdk");
             adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
             Adjust.trackAdRevenue(adRevenue);
@@ -59,7 +59,7 @@ public class TdAdjust {
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
         if (TdAdjust.enableAdjust) {
-            AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_APPLOVIN_MAX);
+            AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue("applovin_max_sdk");
             adjustAdRevenue.setRevenue(ad.getRevenue(), "USD");
             adjustAdRevenue.setAdRevenueNetwork(ad.getNetworkName());
             adjustAdRevenue.setAdRevenueUnit(ad.getAdUnitId());
